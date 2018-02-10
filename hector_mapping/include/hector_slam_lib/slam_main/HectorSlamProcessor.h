@@ -138,6 +138,11 @@ public:
   void setMapUpdateMinDistDiff(float minDist) { paramMinDistanceDiffForMapUpdate = minDist; };
   void setMapUpdateMinAngleDiff(float angleChange) { paramMinAngleDiffForMapUpdate = angleChange; };
 
+  void setSearchNumSamples(int numSamples) { mapRep->setSearchNumSamples(numSamples); };
+  void setSearchRange(float range) { mapRep->setSearchRange(range); };
+  void setAnglePrediction(bool prediction) { mapRep->setAnglePrediction(prediction); };
+  void setVelocityPrediction(bool prediction) { mapRep->setVelocityPrediction(prediction); };
+
 protected:
 
   MapRepresentationInterface* mapRep;

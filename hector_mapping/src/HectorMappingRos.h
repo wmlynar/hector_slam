@@ -44,11 +44,10 @@
 
 #include "slam_main/HectorSlamProcessor.h"
 
-#include "scan/DataPointContainer.h"
 #include "util/MapLockerInterface.h"
 
 #include <boost/thread.hpp>
-
+#include <scan/DataPointContainer.h>
 #include "PoseInfoContainer.h"
 
 
@@ -188,6 +187,11 @@ protected:
   float p_sqr_laser_max_dist_;
   float p_laser_z_min_value_;
   float p_laser_z_max_value_;
+
+  int p_search_num_samples_;
+  double p_search_range_;
+  bool p_angle_prediction_;
+  bool p_velocity_prediction_;
 };
 
 #endif

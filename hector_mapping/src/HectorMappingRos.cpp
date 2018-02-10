@@ -93,6 +93,11 @@ HectorMappingRos::HectorMappingRos()
 
   private_nh_.param("map_pub_period", p_map_pub_period_, 2.0);
 
+  private_nh_.param("search_num_samples", p_search_num_samples_, 1);
+  private_nh_.param("search_range", p_search_range_, 0.2);
+  private_nh_.param("angle_prediction", p_angle_prediction_, true);
+  private_nh_.param("velocity_prediction", p_velocity_prediction_, false);
+
   double tmp = 0.0;
   private_nh_.param("laser_min_dist", tmp, 0.4);
   p_sqr_laser_min_dist_ = static_cast<float>(tmp*tmp);
@@ -128,6 +133,10 @@ HectorMappingRos::HectorMappingRos()
   slamProcessor->setUpdateFactorOccupied(p_update_factor_occupied_);
   slamProcessor->setMapUpdateMinDistDiff(p_map_update_distance_threshold_);
   slamProcessor->setMapUpdateMinAngleDiff(p_map_update_angle_threshold_);
+  slamProcessor->setSearchNumSamples(p_search_num_samples_);
+  slamProcessor->setSearchRange(p_search_range_);
+  slamProcessor->setAnglePrediction(p_angle_prediction_);
+  slamProcessor->setVelocityPrediction(p_velocity_prediction_);
 
   int mapLevels = slamProcessor->getMapLevels();
   mapLevels = 1;
@@ -177,6 +186,10 @@ HectorMappingRos::HectorMappingRos()
   ROS_INFO("HectorSM p_map_update_angle_threshold_: %f", p_map_update_angle_threshold_);
   ROS_INFO("HectorSM p_laser_z_min_value_: %f", p_laser_z_min_value_);
   ROS_INFO("HectorSM p_laser_z_max_value_: %f", p_laser_z_max_value_);
+  ROS_INFO("HectorSM p_search_num_samples_: %d", p_search_num_samples_);
+  ROS_INFO("HectorSM p_search_range_: %f", p_search_range_);
+  ROS_INFO("HectorSM p_angle_prediction_: %s", p_angle_prediction_ ? ("true") : ("false"));
+  ROS_INFO("HectorSM p_velocity_prediction_: %s", p_velocity_prediction_ ? ("true") : ("false"));
 
   scanSubscriber_ = node_.subscribe(p_scan_topic_, p_scan_subscriber_queue_size_, &HectorMappingRos::scanCallback, this);
   sysMsgSubscriber_ = node_.subscribe(p_sys_msg_topic_, 2, &HectorMappingRos::sysMsgCallback, this);

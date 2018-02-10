@@ -69,6 +69,10 @@ public:
     }
 
     dataContainers.resize(numDepth-1);
+
+	previousVelocity[0] = 0;
+	previousVelocity[1] = 0;
+	previousVelocity[2] = 0;
   }
 
   virtual ~MapRepMultiMap()
@@ -119,15 +123,66 @@ public:
 
     Eigen::Vector3f tmp(beginEstimateWorld);
 
+    int divang = searchNumSamples;
+    float angmin=searchRange;
+    if(searchNumSamples==0) {
+    	angmin=0;
+    }
+    int maxj=divang*2+1;
+    float angincr = angmin/divang;
+    Eigen::Vector3f tmparray[maxj];
+    float likelihoodarray[maxj];
+
+    if(velocityPrediction) {
+    	tmp[0] -= previousVelocity[0];
+    	tmp[1] -= previousVelocity[1];
+    }
+
+    if(anglePrediction) {
+    	tmp[2] -= previousVelocity[2];
+    }
+
+    previousVelocity = tmp;
+
     for (int index = size - 1; index >= 0; --index){
       //std::cout << " m " << i;
       if (index == 0){
         tmp  = (mapContainer[index].matchData(tmp, dataContainer, covMatrix, 5));
+      }else if(index == size - 1){
+
+        dataContainers[index-1].setFrom(dataContainer, static_cast<float>(1.0 / pow(2.0, static_cast<double>(index))));
+
+        tmp[2] -= angmin;
+        for(int j=0; j<maxj; j++)
+        {
+          tmparray[j] = (mapContainer[index].matchData(tmp, dataContainers[index-1], covMatrix, 3));
+          likelihoodarray[j] = mapContainer[index].getLikelihoodForState(tmparray[j], dataContainers[index-1]);
+
+          tmp[2] += angincr;
+        }
+
+        float best = -1;
+        int bestindex = -1;
+
+        for(int j=0; j<maxj; j++)
+        {
+          if(best<likelihoodarray[j])
+          {
+            best = likelihoodarray[j];
+            bestindex = j;
+          }
+        }
+
+        tmp = tmparray[bestindex];
+
       }else{
         dataContainers[index-1].setFrom(dataContainer, static_cast<float>(1.0 / pow(2.0, static_cast<double>(index))));
         tmp  = (mapContainer[index].matchData(tmp, dataContainers[index-1], covMatrix, 3));
       }
     }
+
+    previousVelocity -= tmp;
+
     return tmp;
   }
 
@@ -166,9 +221,21 @@ public:
     }
   }
 
+  void setSearchNumSamples(int numSamples) { searchNumSamples = numSamples; };
+  void setSearchRange(float range) { searchRange = range; };
+  void setAnglePrediction(bool prediction) { anglePrediction = prediction; };
+  void setVelocityPrediction(bool prediction) { velocityPrediction = prediction; };
+
 protected:
   std::vector<MapProcContainer> mapContainer;
   std::vector<DataContainer> dataContainers;
+
+  int searchNumSamples;
+  float searchRange;
+  bool anglePrediction;
+  bool velocityPrediction;
+
+  Eigen::Vector3f previousVelocity;
 };
 
 }

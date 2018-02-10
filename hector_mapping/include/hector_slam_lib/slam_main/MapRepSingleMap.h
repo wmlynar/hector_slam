@@ -84,6 +84,11 @@ public:
     gridMap->updateByScan(dataContainer, robotPoseWorld);
   }
 
+  void setSearchNumSamples(int numSamples) {};
+  void setSearchRange(float range) {};
+  void setAnglePrediction(bool prediction) {};
+  void setVelocityPrediction(bool prediction) {};
+
 protected:
   GridMap* gridMap;
   OccGridMapUtilConfig<GridMap>* gridMapUtil;

@@ -29,9 +29,9 @@
 #ifndef __OccGridMapBase_h_
 #define __OccGridMapBase_h_
 
+#include <scan/DataPointContainer.h>
 #include "GridMapBase.h"
 
-#include "../scan/DataPointContainer.h"
 #include "../util/UtilFunctions.h"
 
 #include <Eigen/Geometry>

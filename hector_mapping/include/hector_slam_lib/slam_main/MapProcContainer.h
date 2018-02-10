@@ -115,6 +115,11 @@ public:
     }
   }
 
+  float getLikelihoodForState(const Eigen::Vector3f& estimate, const DataContainer& dataContainer)
+  {
+    return gridMapUtil->getLikelihoodForState(gridMapUtil->getMapCoordsPose(estimate), dataContainer);
+  }
+
   GridMap* gridMap;
   OccGridMapUtilConfig<GridMap>* gridMapUtil;
   ScanMatcher<OccGridMapUtilConfig<GridMap> >* scanMatcher;

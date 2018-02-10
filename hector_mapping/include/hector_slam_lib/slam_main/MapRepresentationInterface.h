@@ -59,6 +59,11 @@ public:
 
   virtual void setUpdateFactorFree(float free_factor) = 0;
   virtual void setUpdateFactorOccupied(float occupied_factor) = 0;
+
+  virtual void setSearchNumSamples(int numSamples) = 0;
+  virtual void setSearchRange(float range) = 0;
+  virtual void setAnglePrediction(bool prediction) = 0;
+  virtual void setVelocityPrediction(bool prediction) = 0;
 };
 
 }
